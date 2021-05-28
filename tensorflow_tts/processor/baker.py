@@ -556,18 +556,31 @@ class BakerProcessor(BaseProcessor):
         items = []
         if self.data_dir:
             with open(
-                os.path.join(self.data_dir, "ProsodyLabeling/000001-010000.txt"),
+                os.path.join(self.data_dir, "000001-010000.txt"),
+                # os.path.join(self.data_dir, "aitu.txt"),
+                # os.path.join(self.data_dir, "text.txt"),
                 encoding="utf-8",
             ) as ttf:
                 lines = ttf.readlines()
+                # print("lines的内容：",lines)
                 for idx in range(0, len(lines), 2):
+                # for idx in range(0, len(lines)):
                     utt_id, chn_char = lines[idx].strip().split()
+                    print("utt_id的内容：",utt_id)
+                    # print("chn_char的内容：",chn_char)
                     pinyin = lines[idx + 1].strip().split()
+                    # print("pinyin的内容：",pinyin)
                     if "IY1" in pinyin or "Ｂ" in chn_char:
                         print(f"Skip this: {utt_id} {chn_char} {pinyin}")
                         continue
                     phonemes = self.get_phoneme_from_char_and_pinyin(chn_char, pinyin)
+                    # print("phonemes的内容：",phonemes)
                     wav_path = os.path.join(self.data_dir, "Wave", "%s.wav" % utt_id)
+                    # wav_path = os.path.join(self.data_dir, "Wave_48K", "%s.wav" % utt_id)
+                    # wav_path = os.path.join(self.data_dir, "Wave_48_rm_scl_new", "%s.wav" % utt_id)
+                    # wav_path = os.path.join(self.data_dir, "Wave_48_rm_scl_new", "%s.wav" % utt_id)
+                    # wav_path = os.path.join(self.data_dir, "test_data", "%s.wav" % utt_id)
+                    # print("wav_path的内容：",wav_path)
                     items.append(
                         [" ".join(phonemes), wav_path, utt_id, self.speaker_name]
                     )
@@ -662,7 +675,7 @@ class BakerProcessor(BaseProcessor):
                     new_pinyin.append(x)
             phonemes = self.get_phoneme_from_char_and_pinyin(text, new_pinyin)
             text = " ".join(phonemes)
-            print(f"phoneme seq: {text}")
+            # print(f"phoneme seq: {text}")
 
         sequence = []
         for symbol in text.split():
